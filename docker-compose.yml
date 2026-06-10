@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - REVERSE_PROXY_HOST=srv909757.hstgr.cloud
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./public:/public
