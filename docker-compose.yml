@@ -1,0 +1,17 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./public:/public
+    ports:
+      - '8080:8080'
+      - '80:80'
+    networks:
+      - deploy-engine-network
+
+networks:
+  deploy-engine-network:
+    name: deploy-engine-network
