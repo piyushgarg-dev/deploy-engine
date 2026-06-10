@@ -9,12 +9,29 @@ const docker = new Docker();
 
 function pullImagePromisified(image, tag) {
   return new Promise((res, rej) => {
-    docker.pull(`${image}:${tag}`, {}, (err) => {
+    docker.pull(`${image}:${tag}`, {}, (err, stream) => {
       if (err) {
-        rej(err);
-      } else {
-        return res(true);
+        return rej(err);
       }
+
+      docker.modem.followProgress(
+        stream,
+        (doneErr, output) => {
+          if (doneErr) {
+            return rej(doneErr);
+          }
+          return res(output);
+        },
+        (event) => {
+          if (event.status) {
+            console.log(
+              `[pull ${image}:${tag}] ${event.status}${
+                event.progress ? ` ${event.progress}` : ''
+              }`,
+            );
+          }
+        },
+      );
     });
   });
 }
